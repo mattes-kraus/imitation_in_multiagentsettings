@@ -116,6 +116,7 @@ gail_trainer = GAIL(
 
 # train and evaluate the expert
 # -----------------------------
+print("evaluating experts")
 with open('expert_policies_joint_spaces.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['training steps', 'trained avg reward', 'np mean'])
@@ -129,13 +130,25 @@ with open('expert_policies_joint_spaces.csv', mode='w', newline='') as file:
 
 # train GAIL and evaluate the generator
 # -------------------------------------
+#   if you want to retrain the expert, change in sample_expert_transitions()
+#   line
+#       expert = download_best_expert()
+#   to
+#       expert = train_expert()
+
+print("evaluating gail policies")
 with open('gail_generator_rewards.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['training steps', 'trained avg reward'])
 
     for i in range(20):
-        gail_trainer.train(100_000)  # Train for 800_000 steps to match expert.
-        learner.save(f"sa_simple_spread_policies/gail_generator_{i}00k")
+        try:
+            learner = PPO.load(f"sa_simple_spread_policies/gail_generator_{i}00k.zip")
+        except:
+            print(f"/sa_simple_spread_policies/gail_generator_{i}00k.zip not found, therefore trained")
+            gail_trainer.train(100_000)
+            learner.save(f"sa_simple_spread_policies/gail_generator_{i}00k")
+
         learner_rewards, _ = evaluate_policy(
             learner, env, 100, return_episode_rewards=False
         )

@@ -22,8 +22,8 @@ n_agents = 3
 env = simple_spread_v3.env(render_mode="human")
 
 # Lade das trainierte Modell
-model = PPO.load("sa_simple_spread_policies/joint_policy_700k.zip")
-# model = PPO.load("sa_simple_spread_policies/gail_generator_1100k.zip")
+# model = PPO.load("sa_simple_spread_policies/joint_policy_700k.zip")
+model = PPO.load("sa_simple_spread_policies/gail_generator_1100k.zip")
 
 # Simuliere Episoden und rendere sie
 env.reset(seed=0)
