@@ -20,8 +20,8 @@ class SaSimpleSpreadWorld(gym.Env):
         self.observation_space = Box(low=-np.infty, high=np.infty, shape=(n_agents, 18), dtype=np.float_)
 
         # same idea for action space
-        # self.action_space = MultiDiscrete([5 for i in range(n_agents)])
-        self.action_space = MultiDiscrete([5,5,5])
+        self.action_space = MultiDiscrete([5 for i in range(n_agents)])
+        # self.action_space = MultiDiscrete([5,5,5])
 
         self.n_agents = n_agents
 

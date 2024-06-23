@@ -34,6 +34,7 @@ env = make_vec_env(
     rng=rng,
     n_envs=8,
     post_wrappers=[lambda env, _: RolloutInfoWrapper(env)],  # to compute rollouts
+    env_make_kwargs={"n_agents": 4}
 )
 
 

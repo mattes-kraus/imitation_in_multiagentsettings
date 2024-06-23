@@ -1,12 +1,12 @@
 import time
 
-from pettingzoo.mpe import simple_spread_v3
 from stable_baselines3 import PPO
+from stable_baselines3.ppo import MlpPolicy
+from pettingzoo.mpe import simple_spread_v3
 from gymnasium.envs.registration import register
-import numpy as np
 from gymnasium.spaces import Box
 from gymnasium.spaces.utils import flatten
-import gymnasium as gym
+import numpy as np
 
 # register our custom gym
 register(
@@ -18,26 +18,24 @@ register(
 SEED = 42
 n_agents = 3
 
-# env=gym.make('sa_simple_spread/SASimpleSpread-v0', render_mode='human', n_agents=n_agents)
+# Lade normale simple spread environment
 env = simple_spread_v3.env(render_mode="human")
 
 # Lade das trainierte Modell
-# model = PPO.load("sa_simple_spread_policies/joint_policy_700k.zip")
-model = PPO.load("sa_simple_spread_policies/gail_generator_1100k.zip")
+# model = PPO.load("sa_simple_spread_policies/joint_policy_700k.zip")         # expert
+model = PPO.load("sa_simple_spread_policies/gail_generator_300k.zip")    # gail trained
 
 # Simuliere Episoden und rendere sie
-env.reset(seed=0)
+env.reset(seed=SEED)
 
 # start with a all zero observation for all three agents
 obs = []
-for i in range(18): obs.append(0)
+for i in range(18):
+    obs.append(0)
 
 observations = []
 for i in range(n_agents):
     observations.append(flatten(Box(low=-200, high=200, shape=(18,)), obs))
-
-# monitor the action distribution for each agent
-
 
 # Unendliche Schleife, um die Simulation fortzusetzen
 while True:
@@ -48,8 +46,8 @@ while True:
         _, _, terminated, truncated, _ = env.last()
 
         # differ between random and trained policy
-        # print("predict: " + str(model.predict(np.array(observations))[0]))
         action = model.predict(np.array(observations))[0][i]
+        # action = env.action_space("agent_"+str(i)).sample()  # uncomment to see random behavior
 
         if terminated or truncated:
             env.step(None)
@@ -63,4 +61,4 @@ while True:
             env.reset()
 
     observations = curr_obs
-    time.sleep(0.01)
+    time.sleep(0.2)
