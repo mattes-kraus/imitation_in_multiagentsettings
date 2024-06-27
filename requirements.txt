@@ -3,7 +3,6 @@ numpy~=1.26.4
 pygame~=2.5.2
 gymnasium~=0.29.1
 pettingzoo~=1.24.3
-gym_examples~=0.0.1
 setuptools~=70.0.0
 stable_baselines3~=2.3.2
 imitation~=1.0.0
