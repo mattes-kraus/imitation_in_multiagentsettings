@@ -34,7 +34,6 @@ env = make_vec_env(
     rng=rng,
     n_envs=8,
     post_wrappers=[lambda env, _: RolloutInfoWrapper(env)],  # to compute rollouts
-    env_make_kwargs={"n_agents": 4}
 )
 
 
@@ -65,8 +64,8 @@ def download_best_expert():
 
 def sample_expert_transitions():
     # get expert
-    expert = train_expert()  # uncomment to train your own experts
-    # expert = download_best_expert()
+    # expert = train_expert()  # uncomment to train your own experts
+    expert = download_best_expert()
 
     # print for evaluation
     expert_rewards_after_training, _ = evaluate_policy(
@@ -144,11 +143,11 @@ with open('gail_generator_rewards.csv', mode='w', newline='') as file:
 
     for i in range(20):
         try:
-            learner = PPO.load(f"sa_simple_spread_policies/gail_generator_randomized_env_{i}00k.zip")
+            learner = PPO.load(f"sa_simple_spread_policies/gail_generator_{i}00k.zip")
         except:
-            print(f"/sa_simple_spread_policies/gail_generator_randomized_env_{i}00k.zip not found, therefore trained")
+            print(f"/sa_simple_spread_policies/gail_generator_{i}00k.zip not found, therefore trained")
             gail_trainer.train(100_000)
-            learner.save(f"sa_simple_spread_policies/gail_generator_randomized_env_{i}00k")
+            learner.save(f"sa_simple_spread_policies/gail_generator_{i}00k")
 
         learner_rewards, _ = evaluate_policy(
             learner, env, 100, return_episode_rewards=False
