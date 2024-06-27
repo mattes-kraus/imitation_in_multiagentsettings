@@ -53,7 +53,7 @@ def train_expert():
     # train multiple agents, so we can evaluate later which one is the best
     for j in range(10):
         expert.learn(100_000)
-        expert.save(f"sa_simple_spread_policies/joint_policy_randomized_env_{j}00k.zip")
+        expert.save(f"sa_simple_spread_policies/joint_policy_{j}00k.zip")
     return expert
 
 
