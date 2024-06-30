@@ -14,6 +14,9 @@ from imitation.util.networks import RunningNorm
 from imitation.util.util import make_vec_env
 
 
+# specify the amount of agents you want to use
+N_AGENTS = 4
+
 # register our custom environment
 register(
      id="sa_simple_spread/SASimpleSpread-v0",
@@ -29,6 +32,7 @@ env = make_vec_env(
     rng=rng,
     n_envs=8,
     post_wrappers=[lambda env, _: RolloutInfoWrapper(env)],  # to compute rollouts
+    env_make_kwargs={"n_agents": N_AGENTS}
 )
 
 
@@ -46,21 +50,22 @@ def train_expert():
         n_steps=64,
     )
     # train multiple agents, so we can evaluate later which one is the best
-    for j in range(10):
+    # for j in range(10):
+    for j in range(1):
         expert.learn(100_000)
-        expert.save(f"sa_simple_spread_policies/joint_policy_{j}00k.zip")
+        expert.save(f"sa_simple_spread_policies/joint_policy_{N_AGENTS}_agents_{j}00k.zip")
     return expert
 
 
 def download_best_expert():
     # from evaluations we know 700k expert is best expert
-    return PPO.load("sa_simple_spread_policies/joint_policy_700k.zip")
+    return PPO.load(f"sa_simple_spread_policies/joint_policy_{N_AGENTS}_700k.zip")
 
 
 def sample_expert_transitions():
     # get expert
-    expert = download_best_expert()
-    # expert = train_expert()  # uncomment to train your own experts
+    # expert = download_best_expert()
+    expert = train_expert()  # uncomment to train your own experts
 
     # print for evaluation
     expert_rewards_after_training, _ = evaluate_policy(
@@ -116,8 +121,8 @@ with open('expert_policies_joint_spaces.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['training steps', 'trained avg reward', 'np mean'])
 
-    for i in range(10):
-        expert = PPO.load(f"sa_simple_spread_policies/joint_policy_{i}00k.zip")
+    for i in range(1): #10
+        expert = PPO.load(f"sa_simple_spread_policies/joint_policy_{N_AGENTS}_agents_{i}00k.zip")
         expert_reward, _ = evaluate_policy(
             expert, env, 100, return_episode_rewards=False
         )
@@ -136,13 +141,13 @@ with open('gail_generator_rewards.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['training steps', 'trained avg reward'])
 
-    for i in range(20):
+    for i in range(1): #10
         try:
-            learner = PPO.load(f"sa_simple_spread_policies/gail_generator_{i}00k.zip")
+            learner = PPO.load(f"sa_simple_spread_policies/gail_generator_{N_AGENTS}_agents_{i}00k.zip")
         except:
-            print(f"/sa_simple_spread_policies/gail_generator_{i}00k.zip not found, therefore trained")
+            print(f"/sa_simple_spread_policies/gail_generator_{N_AGENTS}_agents_{i}00k.zip not found, therefore trained")
             gail_trainer.train(100_000)
-            learner.save(f"sa_simple_spread_policies/gail_generator_{i}00k")
+            learner.save(f"sa_simple_spread_policies/gail_generator_{N_AGENTS}_agents_{i}00k")
 
         learner_rewards, _ = evaluate_policy(
             learner, env, 100, return_episode_rewards=False

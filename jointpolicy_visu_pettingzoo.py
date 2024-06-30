@@ -19,23 +19,23 @@ SEED = 42
 n_agents = 3
 
 # Load normal simple spread environment
-env = simple_spread_v3.env(render_mode="human")
+env = simple_spread_v3.env(render_mode="human", N=n_agents)
 
 # Load policy you want to visualise
-# model = PPO.load("sa_simple_spread_policies/joint_policy_700k.zip")         # expert
-model = PPO.load("sa_simple_spread_policies/gail_generator_300k.zip")    # gail trained
+# model = PPO.load(f"sa_simple_spread_policies/joint_policy_{n_agents}_agents_700k.zip")    # expert
+model = PPO.load(f"sa_simple_spread_policies/gail_generator_{n_agents}_agents_700k.zip")    # gail trained
 
 # Simulate episodes and render them
 env.reset(seed=SEED)
 
 # start with an all zero observation for all three agents
 obs = []
-for i in range(18):  # (18 = n_agents * 6)
+for i in range(n_agents * 6):  # (18 = n_agents * 6)
     obs.append(0)
 
 observations = []
 for i in range(n_agents):
-    observations.append(flatten(Box(low=-200, high=200, shape=(18,)), obs))
+    observations.append(flatten(Box(low=-200, high=200, shape=(n_agents*6,)), obs))
 
 # Infinite loop to keep the simulation ongoing
 while True:
@@ -54,11 +54,13 @@ while True:
         else:
             env.step(action)
         obs, reward, terminated, truncated, info = env.last()
-        curr_obs.append(flatten(Box(low=-200, high=200, shape=(18,)), obs))
+        curr_obs.append(flatten(Box(low=-200, high=200, shape=(n_agents*6,)), obs))
 
         # check end condition
         if terminated or truncated:
             env.reset()
 
     observations = curr_obs
+
+    # if the visu window crashes, increase sleep
     time.sleep(0.2)

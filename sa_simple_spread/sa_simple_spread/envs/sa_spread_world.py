@@ -20,7 +20,8 @@ class SaSimpleSpreadWorld(gym.Env):
         self.observation_space = Box(low=-np.infty, high=np.infty, shape=(n_agents, n_agents*6), dtype=np.float_)
 
         # same idea for action space
-        self.action_space = MultiDiscrete([5,5,5])
+        # self.action_space = MultiDiscrete([5,5,5])
+        self.action_space = MultiDiscrete([5]*n_agents)
 
         self.n_agents = n_agents
 
@@ -36,7 +37,7 @@ class SaSimpleSpreadWorld(gym.Env):
         for i in range(len(self.ma_env.agents)):
             self.ma_env.step(0)
             observation, _, _, _, _ = self.ma_env.last()
-            observations.append(flatten(Box(low=-200, high=200, shape=(18,)), observation))
+            observations.append(flatten(Box(low=-200, high=200, shape=(self.n_agents*6,)), observation))
 
         # we want a homogeneous policy, so we shuffle the observations
         observations = np.array(observations)
