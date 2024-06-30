@@ -1,25 +1,20 @@
 import csv
 
 from gymnasium.envs.registration import register
-import gymnasium
 import numpy as np
 from stable_baselines3 import PPO
-from stable_baselines3.ppo import MultiInputPolicy
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.ppo import MlpPolicy
-from stable_baselines3.common.vec_env import DummyVecEnv
 
 from imitation.algorithms.adversarial.gail import GAIL
 from imitation.data import rollout
 from imitation.data.wrappers import RolloutInfoWrapper
-from imitation.policies.serialize import load_policy
 from imitation.rewards.reward_nets import BasicRewardNet
 from imitation.util.networks import RunningNorm
 from imitation.util.util import make_vec_env
 
-# from imitation.policies.interactive import DiscreteInteractivePolicy
-from collections import OrderedDict
 
+# register our custom environment
 register(
      id="sa_simple_spread/SASimpleSpread-v0",
      entry_point="sa_simple_spread.envs:SaSimpleSpreadWorld",
@@ -64,8 +59,8 @@ def download_best_expert():
 
 def sample_expert_transitions():
     # get expert
-    # expert = train_expert()  # uncomment to train your own experts
     expert = download_best_expert()
+    # expert = train_expert()  # uncomment to train your own experts
 
     # print for evaluation
     expert_rewards_after_training, _ = evaluate_policy(

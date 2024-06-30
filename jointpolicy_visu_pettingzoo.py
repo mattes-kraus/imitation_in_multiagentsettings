@@ -18,26 +18,26 @@ register(
 SEED = 42
 n_agents = 3
 
-# Lade normale simple spread environment
+# Load normal simple spread environment
 env = simple_spread_v3.env(render_mode="human")
 
-# Lade das trainierte Modell
+# Load policy you want to visualise
 # model = PPO.load("sa_simple_spread_policies/joint_policy_700k.zip")         # expert
 model = PPO.load("sa_simple_spread_policies/gail_generator_300k.zip")    # gail trained
 
-# Simuliere Episoden und rendere sie
+# Simulate episodes and render them
 env.reset(seed=SEED)
 
-# start with a all zero observation for all three agents
+# start with an all zero observation for all three agents
 obs = []
-for i in range(18):
+for i in range(18):  # (18 = n_agents * 6)
     obs.append(0)
 
 observations = []
 for i in range(n_agents):
     observations.append(flatten(Box(low=-200, high=200, shape=(18,)), obs))
 
-# Unendliche Schleife, um die Simulation fortzusetzen
+# Infinite loop to keep the simulation ongoing
 while True:
     curr_obs = []
     for i in range(n_agents):

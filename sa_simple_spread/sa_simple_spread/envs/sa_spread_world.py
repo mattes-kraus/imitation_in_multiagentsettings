@@ -1,10 +1,8 @@
 from random import shuffle
 
 import numpy as np
-import pygame
 
 import gymnasium as gym
-from gymnasium.core import RenderFrame
 from gymnasium.spaces import Box, MultiDiscrete
 from gymnasium.spaces.utils import flatten
 from pettingzoo.mpe import simple_spread_v3
