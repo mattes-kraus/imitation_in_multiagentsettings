@@ -1,6 +1,22 @@
 # imitation learning in multi-agent settings
 Here we show how you could map a multi-agent pettingzoo environment to a gymnasium so we can imitate demonstrated behavior with GAIL.
 
+<figure style="text-align: center;">
+  <div style="display: inline-block; width: 45%; margin: 0 2%;">
+    <img src="videos/expert_swarm.gif" style="width: 100%;" alt="First GIF">
+  </div>
+  <div style="display: inline-block; width: 45%; margin: 0 2%;">
+    <img src="videos/trained_swarm.gif" style="width: 100%;" alt="Second GIF">
+  </div>
+  <figcaption style="margin-top: 10px; font-style: italic; color: gray;">
+    On the left you see the expert swarm, trained with stable baselines PPO.
+    On the right the imitation in new, unknown environments. 
+    The goal of the environment is to minimize the distance from each obstacle (black) to any agent (blue).
+    The learned strategy is to navigate one agent out of the way and place the other agents each inbetween two obstacles. 
+  </figcaption>
+</figure>
+
+
 ## Setup
 This project is a PyCharm project. To import it to PyCharm, execute the following steps:
 - press "get from Version Control"
